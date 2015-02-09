@@ -31,17 +31,37 @@ Router.prototype.getPathToResource = function(resource, args) {
   return path;
 };
 
-Router.prototype.getUrlToResource = function(host, resource, args) {
+Router.prototype.getUriToResource = function(host, resource, args) {
   if (!args)
     args = {};
 
+  var key, value, query;
+
+  if (args.query) {
+    query = "?";
+
+    for (key in args.query) {
+      value = args.query[key];
+      if (query !== "?")
+        query = query + "&";
+      query = query + key + "=" + value;
+    }
+
+    delete args.query;
+  }
+
   var path = this.getPathToResource(resource, args);
+
   var protocol;
-  if (ssl)
+  if (this.ssl)
     protocol = "https";
   else
     protocol = "http";
-  "#{protocol}://#{host}#{path}"
+
+  var uri = protocol + "://" + host + path;
+  if (query)
+    uri = uri + query;
+  return uri;
 };
 
 module.exports = Router
