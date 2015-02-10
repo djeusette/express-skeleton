@@ -18,27 +18,33 @@ function WebServer(app, router, logger) {
   this.logger = logger;
 
   this.port   = this.app.port;
-  this.server = express();
+  this.express = express();
 
-  this.server.use(morgan("dev"));
-  this.server.use(bodyParser.json());
-  this.server.use(cookieParser());
+  this.express.use(morgan("dev"));
+  this.express.use(bodyParser.json());
+  this.express.use(cookieParser());
 };
 
 WebServer.prototype.start = function(callback) {
   var self = this;
-  this.server.listen(this.port, function() {
+  this.server = this.express.listen(this.port, function() {
     self.logger.info("WebServer listening on port " + self.port);
     self._loadControllers();
     callback();
   });
 };
 
+WebServer.prototype.stop = function(callback) {
+  this.server.close();
+  this.server = null;
+  callback();
+};
+
 WebServer.prototype._loadControllers = function() {
   var directoryPath = path.resolve(__dirname, "..", "controllers");
   var attributes    = {
     router    : this.router,
-    webServer : this.server,
+    webServer : this.express,
     logger    : this.logger,
     app       : this.app
   };

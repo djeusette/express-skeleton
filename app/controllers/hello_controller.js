@@ -1,7 +1,7 @@
 var Controller = require("../../infrastructure/controller");
-var inherit    = require("../../infrastructure/inherit");
+var inherits   = require("util").inherits;
 
-inherit(HelloController, Controller);
+inherits(HelloController, Controller);
 
 function HelloController(options) {
   Controller.call(this, options);
