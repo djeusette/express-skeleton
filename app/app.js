@@ -26,4 +26,15 @@ App.prototype.start = function(callback) {
   this.webServer.start(callback);
 };
 
+App.prototype.stop = function(callback) {
+  var self    = this;
+  this.router = null;
+
+  this.webServer.stop(function(err) {
+    if (err) return callback(err);
+    self.webServer = null;
+    callback();
+  });
+};
+
 module.exports = App;
